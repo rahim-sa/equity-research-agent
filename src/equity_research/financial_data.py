@@ -5,11 +5,14 @@ def get_financial_data(ticker):
     stock = yf.Ticker(ticker)
     info = stock.info
 
-    print("Name:", info["longName"])
-    print("Sector:", info["sector"])
-    print("Price:", info["currentPrice"])
-    print("Market Cap:", info["marketCap"])
-    print("P/E:", info["trailingPE"])
+    return f"""
+Name: {info["longName"]}
+Sector: {info["sector"]}
+Price: {info["currentPrice"]}
+Market Cap: {info["marketCap"]}
+P/E: {info["trailingPE"]}
+"""
 
 
-get_financial_data("AAPL")
+if __name__ == "__main__":
+    print(get_financial_data("AAPL"))
