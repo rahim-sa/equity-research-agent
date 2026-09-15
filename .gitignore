@@ -1,13 +1,8 @@
-﻿
+﻿__pycache__/
+*.pyc
+.venv/
+
+
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb_checkpoints
-
-__pycache__/
-*.pyc
-.venv/
-.env
-*_full_report_*.txt
-.ruff_cache/
-.pytest_cache/
-dist/
