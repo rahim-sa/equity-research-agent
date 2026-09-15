@@ -8,9 +8,15 @@ def get_financial_data(ticker):
     return f"""
 Name: {info["longName"]}
 Sector: {info["sector"]}
+Industry: {info["industry"]}
 Price: {info["currentPrice"]}
 Market Cap: {info["marketCap"]}
-P/E: {info["trailingPE"]}
+Trailing P/E: {info["trailingPE"]}
+Forward P/E: {info["forwardPE"]}
+Profit Margin: {info["profitMargins"]}
+Revenue Growth: {info["revenueGrowth"]}
+Debt/Equity: {info["debtToEquity"]}
+Dividend Yield: {info["dividendYield"]}
 """
 
 
