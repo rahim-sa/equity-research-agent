@@ -29,7 +29,7 @@ from ddgs import DDGS
 #         print(r["link"])
 #         print("---")
 
-from duckduckgo_search import DDGS
+#from duckduckgo_search import DDGS
 
 TRUSTED_DOMAINS = [
     "reuters.com", "bloomberg.com", "wsj.com", "ft.com",
@@ -79,11 +79,19 @@ def web_search(ticker):
                     "link": r["href"],
                 })
 
+    # for r in results:
+    #     r["score"] = round(score_result(r, ticker), 1)
+
+    # results.sort(key=lambda r: r["score"], reverse=True)
+    # return results
+
+    ### New change
     for r in results:
         r["score"] = round(score_result(r, ticker), 1)
 
     results.sort(key=lambda r: r["score"], reverse=True)
-    return results
+    filtered = [r for r in results if r["score"] >= 2.0]
+    return filtered[:8]
 
 
 if __name__ == "__main__":
