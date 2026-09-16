@@ -69,10 +69,16 @@ def summarize_sentiment(search_results):
     }
 
 
+# if __name__ == "__main__":
+#     fake_results = [
+#         {"title": "Apple beats earnings", "snippet": "Strong quarter, raised guidance."},
+#         {"title": "Apple faces lawsuit", "snippet": "Regulatory pressure mounts in EU."},
+#         {"title": "Apple stock steady", "snippet": "Shares unchanged after mixed report."},
+#     ]
+#     print(summarize_sentiment(fake_results))
+
 if __name__ == "__main__":
-    fake_results = [
-        {"title": "Apple beats earnings", "snippet": "Strong quarter, raised guidance."},
-        {"title": "Apple faces lawsuit", "snippet": "Regulatory pressure mounts in EU."},
-        {"title": "Apple stock steady", "snippet": "Shares unchanged after mixed report."},
-    ]
-    print(summarize_sentiment(fake_results))
+    from equity_research.web_search import web_search
+
+    results = web_search("AAPL")
+    print(summarize_sentiment(results))
