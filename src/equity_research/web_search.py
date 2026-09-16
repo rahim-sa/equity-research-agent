@@ -1,4 +1,5 @@
-from duckduckgo_search import DDGS
+#from duckduckgo_search import DDGS
+from ddgs import DDGS
 
 with DDGS() as ddgs:
     results = ddgs.text("AAPL stock analysis", max_results=5)
