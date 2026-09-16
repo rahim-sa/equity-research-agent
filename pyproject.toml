@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "duckduckgo-search>=8.1.1",
+    "textblob>=0.20.1",
     "yfinance>=1.7.0",
 ]
 [tool.uv]
