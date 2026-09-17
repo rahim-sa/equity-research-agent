@@ -14,14 +14,6 @@ load_dotenv()
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
 
 
-# class ResearchState(TypedDict):
-#     ticker: str
-#     financial_data: str
-#     search_results: list
-#     sentiment_summary: dict
-#     fundamental_view: str
-#     risk_view: str
-
 class ResearchState(TypedDict):
     ticker: str
     financial_data: str
@@ -31,6 +23,7 @@ class ResearchState(TypedDict):
     risk_view: str
     debate: str
     reflection: str
+    final_report: str
 
 
 def data_node(state: ResearchState):
@@ -107,20 +100,39 @@ Debate:
     return {"reflection": response.content}
 
 
-# workflow = StateGraph(ResearchState)
-# workflow.add_node("data", data_node)
-# workflow.add_node("fundamental", fundamental_node)
-# workflow.add_node("risk", risk_node)
-# workflow.set_entry_point("data")
-# workflow.add_edge("data", "fundamental")
-# workflow.add_edge("data", "risk")
-# workflow.add_edge("fundamental", END)
-# workflow.add_edge("risk", END)
+def final_report_node(state: ResearchState):
+    prompt = f"""
+You are the Chief Equity Analyst. Write a structured final research report.
 
-# app = workflow.compile()
+Structure:
+**1. Company Overview**
+**2. Fundamental Assessment**
+**3. Key Risks**
+**4. Market Sentiment**
+**5. Key Debate Points**
+**6. Investment Thesis** (Bull Case / Bear Case)
+**7. Final Rating** (Strongly Bullish / Bullish / Cautiously Bullish / Neutral / Cautiously Bearish / Bearish) with justification
 
-#Wiring change: workflow.add_edge("debate", "reflection") 
-# and workflow.add_edge("reflection", END) (instead of debate → END). 
+Financial Data:
+{state['financial_data']}
+
+Sentiment Summary:
+{state['sentiment_summary']}
+
+Fundamental View:
+{state['fundamental_view']}
+
+Risk View:
+{state['risk_view']}
+
+Debate:
+{state['debate']}
+
+Reflection:
+{state['reflection']}
+"""
+    response = llm.invoke([HumanMessage(content=prompt)])
+    return {"final_report": response.content} 
 
 
 workflow = StateGraph(ResearchState)
@@ -136,36 +148,18 @@ workflow.add_edge("fundamental", "debate")
 workflow.add_edge("risk", "debate")
 workflow.add_edge("debate", "reflection") # Added
 #workflow.add_edge("debate", END)
-workflow.add_edge("reflection", END) # added
+#workflow.add_edge("reflection", END) # added
 #workflow.add_node("reflection", reflection_node)
+workflow.add_node("final", final_report_node)
+workflow.add_edge("reflection", "final")
+workflow.add_edge("final", END)
 
 app = workflow.compile()
 
 
 
 if __name__ == "__main__":
-    # result = app.invoke({
-    #     "ticker": "AAPL",
-    #     "financial_data": "",
-    #     "search_results": [],
-    #     "sentiment_summary": {},
-    #     "fundamental_view": "",
-    #     "risk_view": "",
-    #     "debate": "",
-    #})
-
-#     result = app.invoke({
-#     "ticker": "AAPL",
-#     "financial_data": "",
-#     "search_results": [],
-#     "sentiment_summary": {},
-#     "fundamental_view": "",
-#     "risk_view": "",
-#     "debate": "",
-#     "reflection": "",
-# })
-
-
+     
     result = app.invoke({
     "ticker": "AAPL",
     "financial_data": "",
@@ -175,12 +169,15 @@ if __name__ == "__main__":
     "risk_view": "",
     "debate": "",
     "reflection": "",
+    "final_report": ""
 })
 
-    
     print("--- FUNDAMENTAL ---")
     print(result["fundamental_view"])
     print("\n--- RISK ---")
     print(result["risk_view"])
     print(result["debate"])
     print(result["reflection"])
+    print(result["final_report"])
+
+    
