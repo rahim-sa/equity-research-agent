@@ -199,6 +199,14 @@ load_dotenv()
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
 
 
+# class ResearchState(TypedDict):
+#     ticker: str
+#     financial_data: str
+#     search_results: list
+#     sentiment_summary: dict
+#     fundamental_view: str
+#     risk_view: str
+
 class ResearchState(TypedDict):
     ticker: str
     financial_data: str
@@ -206,6 +214,7 @@ class ResearchState(TypedDict):
     sentiment_summary: dict
     fundamental_view: str
     risk_view: str
+    debate: str
 
 
 def data_node(state: ResearchState):
@@ -249,29 +258,74 @@ Sentiment Summary:
     response = llm.invoke([HumanMessage(content=prompt)])
     return {"risk_view": response.content}
 
+def debate_node(state: ResearchState):
+    prompt = f"""
+Moderate a sharp debate between these two views.
+Highlight the strongest points, contradictions, and key tensions.
+
+Fundamental View:
+{state['fundamental_view']}
+
+Risk View:
+{state['risk_view']}
+"""
+    response = llm.invoke([HumanMessage(content=prompt)])
+    return {"debate": response.content}
+
+
+# workflow = StateGraph(ResearchState)
+# workflow.add_node("data", data_node)
+# workflow.add_node("fundamental", fundamental_node)
+# workflow.add_node("risk", risk_node)
+# workflow.set_entry_point("data")
+# workflow.add_edge("data", "fundamental")
+# workflow.add_edge("data", "risk")
+# workflow.add_edge("fundamental", END)
+# workflow.add_edge("risk", END)
+
+# app = workflow.compile()
+
+ 
+
 
 workflow = StateGraph(ResearchState)
 workflow.add_node("data", data_node)
 workflow.add_node("fundamental", fundamental_node)
 workflow.add_node("risk", risk_node)
+workflow.add_node("debate", debate_node)
 workflow.set_entry_point("data")
 workflow.add_edge("data", "fundamental")
 workflow.add_edge("data", "risk")
-workflow.add_edge("fundamental", END)
-workflow.add_edge("risk", END)
+workflow.add_edge("fundamental", "debate")
+workflow.add_edge("risk", "debate")
+workflow.add_edge("debate", END)
 
 app = workflow.compile()
 
+
+
 if __name__ == "__main__":
+    # result = app.invoke({
+    #     "ticker": "AAPL",
+    #     "financial_data": "",
+    #     "search_results": [],
+    #     "sentiment_summary": {},
+    #     "fundamental_view": "",
+    #     "risk_view": "",
+    #     "debate": "",
+    #})
+
     result = app.invoke({
-        "ticker": "AAPL",
-        "financial_data": "",
-        "search_results": [],
-        "sentiment_summary": {},
-        "fundamental_view": "",
-        "risk_view": "",
-    })
+    "ticker": "AAPL",
+    "financial_data": "",
+    "search_results": [],
+    "sentiment_summary": {},
+    "fundamental_view": "",
+    "risk_view": "",
+    "debate": "",
+})
     print("--- FUNDAMENTAL ---")
     print(result["fundamental_view"])
     print("\n--- RISK ---")
     print(result["risk_view"])
+    print(result["debate"])
