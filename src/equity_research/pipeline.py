@@ -158,26 +158,50 @@ app = workflow.compile()
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
      
-    result = app.invoke({
-    "ticker": "AAPL",
-    "financial_data": "",
-    "search_results": [],
-    "sentiment_summary": {},
-    "fundamental_view": "",
-    "risk_view": "",
-    "debate": "",
-    "reflection": "",
-    "final_report": ""
-})
+#     result = app.invoke({
+#     "ticker": "AAPL",
+#     "financial_data": "",
+#     "search_results": [],
+#     "sentiment_summary": {},
+#     "fundamental_view": "",
+#     "risk_view": "",
+#     "debate": "",
+#     "reflection": "",
+#     "final_report": ""
+# })
 
-    print("--- FUNDAMENTAL ---")
-    print(result["fundamental_view"])
-    print("\n--- RISK ---")
-    print(result["risk_view"])
-    print(result["debate"])
-    print(result["reflection"])
+#     print("--- FUNDAMENTAL ---")
+#     print(result["fundamental_view"])
+#     print("\n--- RISK ---")
+#     print(result["risk_view"])
+#     print(result["debate"])
+#     print(result["reflection"])
+#     print(result["final_report"])
+
+if __name__ == "__main__":
+    from datetime import datetime
+
+    ticker = input("Enter ticker: ").strip().upper()
+
+    result = app.invoke({
+        "ticker": ticker,
+        "financial_data": "",
+        "search_results": [],
+        "sentiment_summary": {},
+        "fundamental_view": "",
+        "risk_view": "",
+        "debate": "",
+        "reflection": "",
+        "final_report": "",
+    })
+
     print(result["final_report"])
+
+    filename = f"{ticker}_report_{datetime.now().strftime('%Y%m%d_%H%M')}.txt"
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(result["final_report"])
+    print(f"\nSaved to {filename}")
 
     
