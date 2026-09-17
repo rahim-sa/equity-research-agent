@@ -12,3 +12,5 @@
 .env
 
 .env
+
+*_report_*.txt
