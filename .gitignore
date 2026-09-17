@@ -8,3 +8,9 @@
 *.ipynb_checkpoints
 
 *.egg-info/
+
+.env
+
+.env
+
+*_report_*.txt
