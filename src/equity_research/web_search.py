@@ -123,7 +123,17 @@ def web_search(ticker):
 
 
 
+def format_search_results(results):
+    if not results:
+        return "No search results available."
 
+    formatted = ""
+    for r in results:
+        formatted += f"[{r['score']}] {r['title']}\n"
+        formatted += f"{r['snippet']}\n"
+        formatted += f"Source: {r['link']}\n"
+        formatted += "-" * 40 + "\n"
+    return formatted
 
 
 if __name__ == "__main__":

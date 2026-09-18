@@ -1,12 +1,13 @@
 
-
+from equity_research.web_search import web_search, format_search_results
+#from equity_research.web_search import web_search
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 
 from equity_research.financial_data import get_financial_data
-from equity_research.web_search import web_search
+
 from equity_research.sentiment import summarize_sentiment
 
 from dotenv import load_dotenv
@@ -37,17 +38,44 @@ class ResearchState(TypedDict):
     final_report: str
 
 
+# def data_node(state: ResearchState):
+#     ticker = state["ticker"]
+#     financial = get_financial_data(ticker)
+#     results = web_search(ticker)
+#     sentiment = summarize_sentiment(results)
+#     return {
+#         "financial_data": financial,
+#         "search_results": results,
+#         "sentiment_summary": sentiment,
+#     }
+
 def data_node(state: ResearchState):
     ticker = state["ticker"]
     financial = get_financial_data(ticker)
     results = web_search(ticker)
     sentiment = summarize_sentiment(results)
+    search_context = format_search_results(results)
     return {
         "financial_data": financial,
         "search_results": results,
         "sentiment_summary": sentiment,
+        "search_context": search_context,
     }
 
+
+# def fundamental_node(state: ResearchState):
+#     prompt = f"""
+# You are a senior Fundamental Equity Analyst.
+# Analyze this company's business quality, growth, profitability, and valuation.
+
+# Financial Data:
+# {state['financial_data']}
+
+# Sentiment Summary:
+# {state['sentiment_summary']}
+# """
+#     response = llm.invoke([HumanMessage(content=prompt)])
+#     return {"fundamental_view": response.content}
 
 def fundamental_node(state: ResearchState):
     prompt = f"""
@@ -57,12 +85,14 @@ Analyze this company's business quality, growth, profitability, and valuation.
 Financial Data:
 {state['financial_data']}
 
+Web Search Context:
+{state['search_context']}
+
 Sentiment Summary:
 {state['sentiment_summary']}
 """
     response = llm.invoke([HumanMessage(content=prompt)])
     return {"fundamental_view": response.content}
-
 
 def risk_node(state: ResearchState):
     prompt = f"""
@@ -74,6 +104,10 @@ Financial Data:
 
 Sentiment Summary:
 {state['sentiment_summary']}
+
+Web Search Context:
+{state['search_context']}
+
 """
     response = llm.invoke([HumanMessage(content=prompt)])
     return {"risk_view": response.content}
@@ -206,6 +240,7 @@ if __name__ == "__main__":
         "debate": "",
         "reflection": "",
         "final_report": "",
+        "search_context": ""
     })
 
     print(result["final_report"])
