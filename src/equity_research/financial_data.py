@@ -32,6 +32,10 @@
 
 import yfinance as yf
 
+def safe_get(info, key, default="N/A"):
+    value = info.get(key)
+    return default if value is None else value
+
 
 def get_financial_data(ticker):
     try:
@@ -66,19 +70,34 @@ def get_financial_data(ticker):
 # Dividend Yield: {info["dividendYield"]}
 # """
 
+#     return f"""
+# Name: {info.get("longName")}
+# Sector: {info.get("sector")}
+# Industry: {info.get("industry")}
+# Price: {info.get("currentPrice")}
+# 1-Year Performance: {perf_1y}
+# Market Cap: {info.get("marketCap")}
+# Trailing P/E: {info.get("trailingPE")}
+# Forward P/E: {info.get("forwardPE")}
+# Profit Margin: {info.get("profitMargins")}
+# Revenue Growth: {info.get("revenueGrowth")}
+# Debt/Equity: {info.get("debtToEquity")}
+# Dividend Yield: {info.get("dividendYield")}
+# """
+
     return f"""
-Name: {info.get("longName")}
-Sector: {info.get("sector")}
-Industry: {info.get("industry")}
-Price: {info.get("currentPrice")}
+Name: {safe_get(info, "longName", ticker)}
+Sector: {safe_get(info, "sector")}
+Industry: {safe_get(info, "industry")}
+Price: {safe_get(info, "currentPrice")}
 1-Year Performance: {perf_1y}
-Market Cap: {info.get("marketCap")}
-Trailing P/E: {info.get("trailingPE")}
-Forward P/E: {info.get("forwardPE")}
-Profit Margin: {info.get("profitMargins")}
-Revenue Growth: {info.get("revenueGrowth")}
-Debt/Equity: {info.get("debtToEquity")}
-Dividend Yield: {info.get("dividendYield")}
+Market Cap: {safe_get(info, "marketCap")}
+Trailing P/E: {safe_get(info, "trailingPE")}
+Forward P/E: {safe_get(info, "forwardPE")}
+Profit Margin: {safe_get(info, "profitMargins")}
+Revenue Growth: {safe_get(info, "revenueGrowth")}
+Debt/Equity: {safe_get(info, "debtToEquity")}
+Dividend Yield: {safe_get(info, "dividendYield")}
 """
 
 
