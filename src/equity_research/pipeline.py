@@ -26,11 +26,23 @@ if not os.getenv("OPENAI_API_KEY"):
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
 
 
+# class ResearchState(TypedDict):
+#     ticker: str
+#     financial_data: str
+#     search_results: list
+#     sentiment_summary: dict
+#     fundamental_view: str
+#     risk_view: str
+#     debate: str
+#     reflection: str
+#     final_report: str
+
 class ResearchState(TypedDict):
     ticker: str
     financial_data: str
     search_results: list
     sentiment_summary: dict
+    search_context: str
     fundamental_view: str
     risk_view: str
     debate: str
@@ -208,19 +220,19 @@ if __name__ == "__main__":
     from datetime import datetime
 
     ticker = input("Enter ticker: ").strip().upper()
-
+ 
     result = app.invoke({
-        "ticker": ticker,
-        "financial_data": "",
-        "search_results": [],
-        "sentiment_summary": {},
-        "fundamental_view": "",
-        "risk_view": "",
-        "debate": "",
-        "reflection": "",
-        "final_report": "",
-        "search_context": ""
-    })
+    "ticker": ticker,
+    "financial_data": "",
+    "search_results": [],
+    "sentiment_summary": {},
+    "search_context": "",
+    "fundamental_view": "",
+    "risk_view": "",
+    "debate": "",
+    "reflection": "",
+    "final_report": "",
+})
 
     print(result["final_report"])
 
