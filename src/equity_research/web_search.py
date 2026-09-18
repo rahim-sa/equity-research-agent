@@ -69,15 +69,43 @@ def web_search(ticker):
     ]
 
     results = []
+    # with DDGS() as ddgs:
+    #     for q in queries:
+    #         search_results = ddgs.text(q, max_results=5)
+    #         for r in search_results:
+    #             results.append({
+    #                 "title": r["title"],
+    #                 "snippet": r["body"],
+    #                 "link": r["href"],
+    #             })
+
     with DDGS() as ddgs:
         for q in queries:
-            search_results = ddgs.text(q, max_results=5)
+            try:
+                search_results = ddgs.text(q, max_results=5)
+            except Exception as e:
+                print(f"  ! search failed for query '{q}': {e}")
+                continue
             for r in search_results:
                 results.append({
                     "title": r["title"],
                     "snippet": r["body"],
                     "link": r["href"],
                 })
+
+
+    
+
+
+      # with DDGS() as ddgs:
+      #   for q in queries:
+      #       search_results = ddgs.text(q, max_results=5)
+      #       for r in search_results:
+      #           results.append({
+      #               "title": r["title"],
+      #               "snippet": r["body"],
+      #               "link": r["href"],
+      #           })  
 
     # for r in results:
     #     r["score"] = round(score_result(r, ticker), 1)
