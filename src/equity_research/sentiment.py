@@ -1,32 +1,33 @@
-# from textblob import TextBlob
-
-# text = "Apple beat earnings expectations and raised guidance for next quarter."
-# blob = TextBlob(text)
-# print(blob.sentiment)
-
-
-# from textblob import TextBlob
-
-
-# def analyze_sentiment(text):
-#     polarity = TextBlob(text).sentiment.polarity
-
-#     if polarity > 0.15:
-#         label = "Positive"
-#     elif polarity < -0.15:
-#         label = "Negative"
-#     else:
-#         label = "Neutral"
-
-#     return {"polarity": round(polarity, 3), "label": label}
-
-
-# if __name__ == "__main__":
-#     print(analyze_sentiment("Apple beat earnings expectations and raised guidance."))
-#     print(analyze_sentiment("The company missed on revenue and cut its outlook."))
-
 
 from textblob import TextBlob
+
+
+_FINBERT_PIPELINE = None
+_FINBERT_WARNED = False
+
+
+def _get_finbert():
+    global _FINBERT_PIPELINE, _FINBERT_WARNED
+    if _FINBERT_PIPELINE is not None:
+        return _FINBERT_PIPELINE
+
+    try:
+        from transformers import pipeline
+        _FINBERT_PIPELINE = pipeline("sentiment-analysis", model="ProsusAI/finbert")
+        return _FINBERT_PIPELINE
+    except Exception:
+        if not _FINBERT_WARNED:
+            print("  ! FinBERT unavailable, falling back to TextBlob.")
+            _FINBERT_WARNED = True
+        return None
+
+
+uv run python -c "
+from transformers import pipeline
+finbert = pipeline('sentiment-analysis', model='ProsusAI/finbert')
+print(finbert('The company missed on revenue and cut its outlook.'))
+print(finbert('Apple beat earnings expectations and raised guidance.'))
+"
 
 
 def analyze_sentiment(text):
