@@ -122,6 +122,10 @@ def web_search(ticker):
     return filtered[:8]
 
 
+
+
+
+
 if __name__ == "__main__":
     for r in web_search("AAPL"):
         print(f"[{r['score']}] {r['title']}")
