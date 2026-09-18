@@ -51,19 +51,34 @@ def get_financial_data(ticker):
         end_price = hist["Close"].iloc[-1]
         perf_1y = f"{round(((end_price - start_price) / start_price) * 100, 1)}%"
 
+#     return f"""
+# Name: {info["longName"]}
+# Sector: {info["sector"]}
+# Industry: {info["industry"]}
+# Price: {info["currentPrice"]}
+# 1-Year Performance: {perf_1y}
+# Market Cap: {info["marketCap"]}
+# Trailing P/E: {info["trailingPE"]}
+# Forward P/E: {info["forwardPE"]}
+# Profit Margin: {info["profitMargins"]}
+# Revenue Growth: {info["revenueGrowth"]}
+# Debt/Equity: {info["debtToEquity"]}
+# Dividend Yield: {info["dividendYield"]}
+# """
+
     return f"""
-Name: {info["longName"]}
-Sector: {info["sector"]}
-Industry: {info["industry"]}
-Price: {info["currentPrice"]}
+Name: {info.get("longName")}
+Sector: {info.get("sector")}
+Industry: {info.get("industry")}
+Price: {info.get("currentPrice")}
 1-Year Performance: {perf_1y}
-Market Cap: {info["marketCap"]}
-Trailing P/E: {info["trailingPE"]}
-Forward P/E: {info["forwardPE"]}
-Profit Margin: {info["profitMargins"]}
-Revenue Growth: {info["revenueGrowth"]}
-Debt/Equity: {info["debtToEquity"]}
-Dividend Yield: {info["dividendYield"]}
+Market Cap: {info.get("marketCap")}
+Trailing P/E: {info.get("trailingPE")}
+Forward P/E: {info.get("forwardPE")}
+Profit Margin: {info.get("profitMargins")}
+Revenue Growth: {info.get("revenueGrowth")}
+Debt/Equity: {info.get("debtToEquity")}
+Dividend Yield: {info.get("dividendYield")}
 """
 
 
