@@ -203,27 +203,6 @@ app = workflow.compile()
 
 
 
-# if __name__ == "__main__":
-     
-#     result = app.invoke({
-#     "ticker": "AAPL",
-#     "financial_data": "",
-#     "search_results": [],
-#     "sentiment_summary": {},
-#     "fundamental_view": "",
-#     "risk_view": "",
-#     "debate": "",
-#     "reflection": "",
-#     "final_report": ""
-# })
-
-#     print("--- FUNDAMENTAL ---")
-#     print(result["fundamental_view"])
-#     print("\n--- RISK ---")
-#     print(result["risk_view"])
-#     print(result["debate"])
-#     print(result["reflection"])
-#     print(result["final_report"])
 
 if __name__ == "__main__":
     from datetime import datetime
