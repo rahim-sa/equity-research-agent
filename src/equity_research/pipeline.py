@@ -1,5 +1,5 @@
 
-from dotenv import load_dotenv
+
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
@@ -9,7 +9,18 @@ from equity_research.financial_data import get_financial_data
 from equity_research.web_search import web_search
 from equity_research.sentiment import summarize_sentiment
 
+from dotenv import load_dotenv
+
+
 load_dotenv()
+import os
+
+if not os.getenv("OPENAI_API_KEY"):
+    raise SystemExit(
+        "OPENAI_API_KEY is not set. Add it to your .env file before running this script."
+    )
+
+
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
 
