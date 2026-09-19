@@ -9,10 +9,10 @@ from equity_research.agents import (
 )
 
 
-
+from equity_research.state import ResearchState
 from equity_research.web_search import web_search, format_search_results
 #from equity_research.web_search import web_search
-from typing import TypedDict
+#from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
@@ -48,17 +48,17 @@ if not os.getenv("OPENAI_API_KEY"):
 #     reflection: str
 #     final_report: str
 
-class ResearchState(TypedDict):
-    ticker: str
-    financial_data: str
-    search_results: list
-    sentiment_summary: dict
-    search_context: str
-    fundamental_view: str
-    risk_view: str
-    debate: str
-    reflection: str
-    final_report: str
+# class ResearchState(TypedDict):
+#     ticker: str
+#     financial_data: str
+#     search_results: list
+#     sentiment_summary: dict
+#     search_context: str
+#     fundamental_view: str
+#     risk_view: str
+#     debate: str
+#     reflection: str
+#     final_report: str
 
 
 def data_node(state: ResearchState):
