@@ -132,7 +132,7 @@ Fundamental View:
 Risk View:
 {state['risk_view']}
 """
-    response = await llm.invoke([HumanMessage(content=prompt)])
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"debate": response.content}
 
 async def reflection_node(state: ResearchState):
@@ -150,7 +150,7 @@ Risk:
 Debate:
 {state['debate']}
 """
-    response = await llm.invoke([HumanMessage(content=prompt)])
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"reflection": response.content}
 
 
@@ -185,7 +185,7 @@ Debate:
 Reflection:
 {state['reflection']}
 """
-    response = await llm.invoke([HumanMessage(content=prompt)])
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"final_report": response.content} 
 
 
@@ -213,23 +213,49 @@ app = workflow.compile()
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+#     from datetime import datetime
+
+#     ticker = input("Enter ticker: ").strip().upper()
+ 
+#     result = app.invoke({
+#     "ticker": ticker,
+#     "financial_data": "",
+#     "search_results": [],
+#     "sentiment_summary": {},
+#     "search_context": "",
+#     "fundamental_view": "",
+#     "risk_view": "",
+#     "debate": "",
+#     "reflection": "",
+#     "final_report": "",
+# })
+
+#     print(result["final_report"])
+
+#     filename = f"{ticker}_report_{datetime.now().strftime('%Y%m%d_%H%M')}.txt"
+#     with open(filename, "w", encoding="utf-8") as f:
+#         f.write(result["final_report"])
+#     print(f"\nSaved to {filename}")
+
+
+async def main():
     from datetime import datetime
 
     ticker = input("Enter ticker: ").strip().upper()
- 
-    result = app.invoke({
-    "ticker": ticker,
-    "financial_data": "",
-    "search_results": [],
-    "sentiment_summary": {},
-    "search_context": "",
-    "fundamental_view": "",
-    "risk_view": "",
-    "debate": "",
-    "reflection": "",
-    "final_report": "",
-})
+
+    result = await app.ainvoke({
+        "ticker": ticker,
+        "financial_data": "",
+        "search_results": [],
+        "sentiment_summary": {},
+        "search_context": "",
+        "fundamental_view": "",
+        "risk_view": "",
+        "debate": "",
+        "reflection": "",
+        "final_report": "",
+    })
 
     print(result["final_report"])
 
@@ -237,5 +263,10 @@ if __name__ == "__main__":
     with open(filename, "w", encoding="utf-8") as f:
         f.write(result["final_report"])
     print(f"\nSaved to {filename}")
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
 
     
