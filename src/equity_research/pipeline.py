@@ -100,7 +100,8 @@ Sentiment Summary:
     response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"fundamental_view": response.content}
 
-def risk_node(state: ResearchState):
+#def risk_node(state: ResearchState):
+async def risk_node(state: ResearchState):
     prompt = f"""
 You are a skeptical Risk Analyst.
 Identify the most material risks facing this company.
@@ -115,7 +116,9 @@ Web Search Context:
 {state['search_context']}
 
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    # response = llm.invoke([HumanMessage(content=prompt)])
+    # return {"risk_view": response.content}
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"risk_view": response.content}
 
 def debate_node(state: ResearchState):
