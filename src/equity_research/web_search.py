@@ -1,35 +1,6 @@
-#from duckduckgo_search import DDGS
+
 from ddgs import DDGS
 
- 
-
-# def web_search(ticker):
-#     queries = [
-#         f"{ticker} stock analysis",
-#         f"{ticker} earnings outlook",
-#         f"{ticker} risks controversy",
-#     ]
-
-#     results = []
-#     with DDGS() as ddgs:
-#         for q in queries:
-#             search_results = ddgs.text(q, max_results=5)
-#             for r in search_results:
-#                 results.append({
-#                     "title": r["title"],
-#                     "snippet": r["body"],
-#                     "link": r["href"],
-#                 })
-#     return results
-
-
-# if __name__ == "__main__":
-#     for r in web_search("AAPL"):
-#         print(r["title"])
-#         print(r["link"])
-#         print("---")
-
-#from duckduckgo_search import DDGS
 
 TRUSTED_DOMAINS = [
     "reuters.com", "bloomberg.com", "wsj.com", "ft.com",
@@ -69,9 +40,15 @@ def web_search(ticker):
     ]
 
     results = []
+    
+
     with DDGS() as ddgs:
         for q in queries:
-            search_results = ddgs.text(q, max_results=5)
+            try:
+                search_results = ddgs.text(q, max_results=5)
+            except Exception as e:
+                print(f"  ! search failed for query '{q}': {e}")
+                continue
             for r in search_results:
                 results.append({
                     "title": r["title"],
@@ -79,19 +56,27 @@ def web_search(ticker):
                     "link": r["href"],
                 })
 
-    # for r in results:
-    #     r["score"] = round(score_result(r, ticker), 1)
 
-    # results.sort(key=lambda r: r["score"], reverse=True)
-    # return results
-
-    ### New change
     for r in results:
         r["score"] = round(score_result(r, ticker), 1)
 
     results.sort(key=lambda r: r["score"], reverse=True)
     filtered = [r for r in results if r["score"] >= 2.0]
     return filtered[:8]
+
+
+
+def format_search_results(results):
+    if not results:
+        return "No search results available."
+
+    formatted = ""
+    for r in results:
+        formatted += f"[{r['score']}] {r['title']}\n"
+        formatted += f"{r['snippet']}\n"
+        formatted += f"Source: {r['link']}\n"
+        formatted += "-" * 40 + "\n"
+    return formatted
 
 
 if __name__ == "__main__":
