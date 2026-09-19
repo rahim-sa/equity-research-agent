@@ -50,17 +50,6 @@ class ResearchState(TypedDict):
     final_report: str
 
 
-# def data_node(state: ResearchState):
-#     ticker = state["ticker"]
-#     financial = get_financial_data(ticker)
-#     results = web_search(ticker)
-#     sentiment = summarize_sentiment(results)
-#     return {
-#         "financial_data": financial,
-#         "search_results": results,
-#         "sentiment_summary": sentiment,
-#     }
-
 def data_node(state: ResearchState):
     ticker = state["ticker"]
     financial = get_financial_data(ticker)
@@ -89,7 +78,9 @@ def data_node(state: ResearchState):
 #     response = llm.invoke([HumanMessage(content=prompt)])
 #     return {"fundamental_view": response.content}
 
-def fundamental_node(state: ResearchState):
+#def fundamental_node(state: ResearchState):
+
+async def fundamental_node(state: ResearchState):    
     prompt = f"""
 You are a senior Fundamental Equity Analyst.
 Analyze this company's business quality, growth, profitability, and valuation.
@@ -103,7 +94,10 @@ Web Search Context:
 Sentiment Summary:
 {state['sentiment_summary']}
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    # response = llm.invoke([HumanMessage(content=prompt)])
+    # return {"fundamental_view": response.content}
+
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"fundamental_view": response.content}
 
 def risk_node(state: ResearchState):
