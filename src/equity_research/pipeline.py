@@ -121,7 +121,7 @@ Web Search Context:
     response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"risk_view": response.content}
 
-def debate_node(state: ResearchState):
+async def debate_node(state: ResearchState):
     prompt = f"""
 Moderate a sharp debate between these two views.
 Highlight the strongest points, contradictions, and key tensions.
@@ -132,10 +132,10 @@ Fundamental View:
 Risk View:
 {state['risk_view']}
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    response = await llm.invoke([HumanMessage(content=prompt)])
     return {"debate": response.content}
 
-def reflection_node(state: ResearchState):
+async def reflection_node(state: ResearchState):
     prompt = f"""
 You are a senior investment professional. Critically evaluate the reasoning
 quality and balance of the fundamental and risk views. Give clear guidance
@@ -150,11 +150,11 @@ Risk:
 Debate:
 {state['debate']}
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    response = await llm.invoke([HumanMessage(content=prompt)])
     return {"reflection": response.content}
 
 
-def final_report_node(state: ResearchState):
+async def final_report_node(state: ResearchState):
     prompt = f"""
 You are the Chief Equity Analyst. Write a structured final research report.
 
@@ -185,7 +185,7 @@ Debate:
 Reflection:
 {state['reflection']}
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    response = await llm.invoke([HumanMessage(content=prompt)])
     return {"final_report": response.content} 
 
 
