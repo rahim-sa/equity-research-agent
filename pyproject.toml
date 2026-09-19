@@ -14,5 +14,9 @@ dependencies = [
     "transformers>=5.17.0",
     "yfinance>=1.7.0",
 ]
+
+[project.scripts]
+equity-research = "equity_research.pipeline:cli"
+
 [tool.uv]
 package = true
