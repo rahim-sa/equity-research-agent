@@ -276,8 +276,14 @@ async def main():
     print(f"\nSaved to {filename}")
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+#     import asyncio
+#     asyncio.run(main())
+
+def cli():
     import asyncio
     asyncio.run(main())
 
-    
+
+if __name__ == "__main__":
+    cli()
