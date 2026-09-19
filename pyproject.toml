@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "duckduckgo-search>=8.1.1",
+    "ddgs>=9.16.0",
     "langchain-openai>=1.6.2",
     "langgraph>=1.2.11",
     "python-dotenv>=1.2.3",
@@ -14,5 +14,9 @@ dependencies = [
     "transformers>=5.17.0",
     "yfinance>=1.7.0",
 ]
+
+[project.scripts]
+equity-research = "equity_research.pipeline:cli"
+
 [tool.uv]
 package = true
