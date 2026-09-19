@@ -50,17 +50,6 @@ class ResearchState(TypedDict):
     final_report: str
 
 
-# def data_node(state: ResearchState):
-#     ticker = state["ticker"]
-#     financial = get_financial_data(ticker)
-#     results = web_search(ticker)
-#     sentiment = summarize_sentiment(results)
-#     return {
-#         "financial_data": financial,
-#         "search_results": results,
-#         "sentiment_summary": sentiment,
-#     }
-
 def data_node(state: ResearchState):
     ticker = state["ticker"]
     financial = get_financial_data(ticker)
@@ -89,7 +78,9 @@ def data_node(state: ResearchState):
 #     response = llm.invoke([HumanMessage(content=prompt)])
 #     return {"fundamental_view": response.content}
 
-def fundamental_node(state: ResearchState):
+#def fundamental_node(state: ResearchState):
+
+async def fundamental_node(state: ResearchState):    
     prompt = f"""
 You are a senior Fundamental Equity Analyst.
 Analyze this company's business quality, growth, profitability, and valuation.
@@ -103,10 +94,14 @@ Web Search Context:
 Sentiment Summary:
 {state['sentiment_summary']}
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    # response = llm.invoke([HumanMessage(content=prompt)])
+    # return {"fundamental_view": response.content}
+
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"fundamental_view": response.content}
 
-def risk_node(state: ResearchState):
+#def risk_node(state: ResearchState):
+async def risk_node(state: ResearchState):
     prompt = f"""
 You are a skeptical Risk Analyst.
 Identify the most material risks facing this company.
@@ -121,10 +116,12 @@ Web Search Context:
 {state['search_context']}
 
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    # response = llm.invoke([HumanMessage(content=prompt)])
+    # return {"risk_view": response.content}
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"risk_view": response.content}
 
-def debate_node(state: ResearchState):
+async def debate_node(state: ResearchState):
     prompt = f"""
 Moderate a sharp debate between these two views.
 Highlight the strongest points, contradictions, and key tensions.
@@ -135,10 +132,10 @@ Fundamental View:
 Risk View:
 {state['risk_view']}
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"debate": response.content}
 
-def reflection_node(state: ResearchState):
+async def reflection_node(state: ResearchState):
     prompt = f"""
 You are a senior investment professional. Critically evaluate the reasoning
 quality and balance of the fundamental and risk views. Give clear guidance
@@ -153,11 +150,11 @@ Risk:
 Debate:
 {state['debate']}
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"reflection": response.content}
 
 
-def final_report_node(state: ResearchState):
+async def final_report_node(state: ResearchState):
     prompt = f"""
 You are the Chief Equity Analyst. Write a structured final research report.
 
@@ -188,7 +185,7 @@ Debate:
 Reflection:
 {state['reflection']}
 """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
     return {"final_report": response.content} 
 
 
@@ -216,23 +213,49 @@ app = workflow.compile()
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+#     from datetime import datetime
+
+#     ticker = input("Enter ticker: ").strip().upper()
+ 
+#     result = app.invoke({
+#     "ticker": ticker,
+#     "financial_data": "",
+#     "search_results": [],
+#     "sentiment_summary": {},
+#     "search_context": "",
+#     "fundamental_view": "",
+#     "risk_view": "",
+#     "debate": "",
+#     "reflection": "",
+#     "final_report": "",
+# })
+
+#     print(result["final_report"])
+
+#     filename = f"{ticker}_report_{datetime.now().strftime('%Y%m%d_%H%M')}.txt"
+#     with open(filename, "w", encoding="utf-8") as f:
+#         f.write(result["final_report"])
+#     print(f"\nSaved to {filename}")
+
+
+async def main():
     from datetime import datetime
 
     ticker = input("Enter ticker: ").strip().upper()
- 
-    result = app.invoke({
-    "ticker": ticker,
-    "financial_data": "",
-    "search_results": [],
-    "sentiment_summary": {},
-    "search_context": "",
-    "fundamental_view": "",
-    "risk_view": "",
-    "debate": "",
-    "reflection": "",
-    "final_report": "",
-})
+
+    result = await app.ainvoke({
+        "ticker": ticker,
+        "financial_data": "",
+        "search_results": [],
+        "sentiment_summary": {},
+        "search_context": "",
+        "fundamental_view": "",
+        "risk_view": "",
+        "debate": "",
+        "reflection": "",
+        "final_report": "",
+    })
 
     print(result["final_report"])
 
@@ -240,5 +263,10 @@ if __name__ == "__main__":
     with open(filename, "w", encoding="utf-8") as f:
         f.write(result["final_report"])
     print(f"\nSaved to {filename}")
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
 
     
