@@ -11,11 +11,10 @@ from equity_research.agents import (
 
 from equity_research.state import ResearchState
 from equity_research.web_search import web_search, format_search_results
-#from equity_research.web_search import web_search
-#from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
+import re
 
 from equity_research.financial_data import get_financial_data
 
@@ -59,9 +58,6 @@ workflow.add_edge("data", "risk")
 workflow.add_edge("fundamental", "debate")
 workflow.add_edge("risk", "debate")
 workflow.add_edge("debate", "reflection") # Added
-#workflow.add_edge("debate", END)
-#workflow.add_edge("reflection", END) # added
-#workflow.add_node("reflection", reflection_node)
 workflow.add_node("final", final_report_node)
 workflow.add_edge("reflection", "final")
 workflow.add_edge("final", END)
@@ -74,7 +70,12 @@ app = workflow.compile()
 async def main():
     from datetime import datetime
 
-    ticker = input("Enter ticker: ").strip().upper()
+    #ticker = input("Enter ticker: ").strip().upper()
+    raw_ticker = input("Enter ticker: ").strip().upper()
+    ticker = re.sub(r"[^A-Z0-9.\-]", "", raw_ticker)
+    if not ticker:
+        print("Invalid ticker entered.")
+        return
 
     result = await app.ainvoke({
         "ticker": ticker,
